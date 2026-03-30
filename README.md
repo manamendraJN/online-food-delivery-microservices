@@ -53,8 +53,3 @@ Main goals of this project:
 - Order: 8023
 - Payment: 8024
 - Delivery: 8025
-
-## How To Run And Test
-
-For full setup, run, and endpoint verification steps, see:
-- HOW_TO_RUN_PROJECT.md
