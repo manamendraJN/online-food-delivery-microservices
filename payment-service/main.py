@@ -12,7 +12,7 @@ def read_root():
     return {"message": "Payment Microservice is running"}
 
 
-@app.get("/api/payments", response_model=List[Payment])
+@app.get("/api/payments/read-all", response_model=List[Payment])
 def get_all_payments():
     try:
         return payment_service.get_all()
@@ -20,7 +20,7 @@ def get_all_payments():
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve payments: {str(e)}")
 
 
-@app.get("/api/payments/{payment_id}", response_model=Payment)
+@app.get("/api/payments/read/{payment_id}", response_model=Payment)
 def get_payment(payment_id: int):
     try:
         payment = payment_service.get_by_id(payment_id)
@@ -33,7 +33,7 @@ def get_payment(payment_id: int):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve payment: {str(e)}")
 
 
-@app.post("/api/payments", response_model=Payment, status_code=status.HTTP_201_CREATED)
+@app.post("/api/payments/create", response_model=Payment, status_code=status.HTTP_201_CREATED)
 def create_payment(payment: PaymentCreate):
     try:
         return payment_service.create(payment)
@@ -41,7 +41,7 @@ def create_payment(payment: PaymentCreate):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to create payment: {str(e)}")
 
 
-@app.put("/api/payments/{payment_id}", response_model=Payment)
+@app.put("/api/payments/update/{payment_id}", response_model=Payment)
 def update_payment(payment_id: int, payment: PaymentUpdate):
     try:
         updated_payment = payment_service.update(payment_id, payment)
@@ -54,7 +54,7 @@ def update_payment(payment_id: int, payment: PaymentUpdate):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to update payment: {str(e)}")
 
 
-@app.delete("/api/payments/{payment_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/payments/delete/{payment_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_payment(payment_id: int):
     try:
         success = payment_service.delete(payment_id)

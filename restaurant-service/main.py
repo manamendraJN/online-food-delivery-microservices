@@ -12,7 +12,7 @@ def read_root():
     return {"message": "Restaurant Microservice is running"}
 
 
-@app.get("/api/restaurants", response_model=List[Restaurant])
+@app.get("/api/restaurants/read-all", response_model=List[Restaurant])
 def get_all_restaurants():
     try:
         return restaurant_service.get_all()
@@ -20,7 +20,7 @@ def get_all_restaurants():
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve restaurants: {str(e)}")
 
 
-@app.get("/api/restaurants/{restaurant_id}", response_model=Restaurant)
+@app.get("/api/restaurants/read/{restaurant_id}", response_model=Restaurant)
 def get_restaurant(restaurant_id: int):
     try:
         restaurant = restaurant_service.get_by_id(restaurant_id)
@@ -33,7 +33,7 @@ def get_restaurant(restaurant_id: int):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve restaurant: {str(e)}")
 
 
-@app.post("/api/restaurants", response_model=Restaurant, status_code=status.HTTP_201_CREATED)
+@app.post("/api/restaurants/create", response_model=Restaurant, status_code=status.HTTP_201_CREATED)
 def create_restaurant(restaurant: RestaurantCreate):
     try:
         return restaurant_service.create(restaurant)
@@ -41,7 +41,7 @@ def create_restaurant(restaurant: RestaurantCreate):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to create restaurant: {str(e)}")
 
 
-@app.put("/api/restaurants/{restaurant_id}", response_model=Restaurant)
+@app.put("/api/restaurants/update/{restaurant_id}", response_model=Restaurant)
 def update_restaurant(restaurant_id: int, restaurant: RestaurantUpdate):
     try:
         updated_restaurant = restaurant_service.update(restaurant_id, restaurant)
@@ -54,7 +54,7 @@ def update_restaurant(restaurant_id: int, restaurant: RestaurantUpdate):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to update restaurant: {str(e)}")
 
 
-@app.delete("/api/restaurants/{restaurant_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/restaurants/delete/{restaurant_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_restaurant(restaurant_id: int):
     try:
         success = restaurant_service.delete(restaurant_id)

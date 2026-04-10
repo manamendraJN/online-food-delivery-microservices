@@ -130,20 +130,20 @@ Output report:
 
 Direct mode:
 ```powershell
-Invoke-RestMethod -Uri "http://127.0.0.1:8021/api/users" -Method Get
-Invoke-RestMethod -Uri "http://127.0.0.1:8022/api/restaurants" -Method Get
-Invoke-RestMethod -Uri "http://127.0.0.1:8023/api/orders" -Method Get
-Invoke-RestMethod -Uri "http://127.0.0.1:8024/api/payments" -Method Get
-Invoke-RestMethod -Uri "http://127.0.0.1:8025/api/deliveries" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8021/api/users/read-all" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8022/api/restaurants/read-all" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8023/api/orders/read-all" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8024/api/payments/read-all" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8025/api/deliveries/read-all" -Method Get
 ```
 
 Gateway mode:
 ```powershell
-Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/users" -Method Get
-Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/restaurants" -Method Get
-Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/orders" -Method Get
-Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/payments" -Method Get
-Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/deliveries" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/users/read-all" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/restaurants/read-all" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/orders/read-all" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/payments/read-all" -Method Get
+Invoke-RestMethod -Uri "http://127.0.0.1:8020/gateway/deliveries/read-all" -Method Get
 ```
 
 ## 8. Troubleshooting

@@ -12,7 +12,7 @@ def read_root():
     return {"message": "Order Microservice is running"}
 
 
-@app.get("/api/orders", response_model=List[Order])
+@app.get("/api/orders/read-all", response_model=List[Order])
 def get_all_orders():
     try:
         return order_service.get_all()
@@ -20,7 +20,7 @@ def get_all_orders():
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve orders: {str(e)}")
 
 
-@app.get("/api/orders/{order_id}", response_model=Order)
+@app.get("/api/orders/read/{order_id}", response_model=Order)
 def get_order(order_id: int):
     try:
         order = order_service.get_by_id(order_id)
@@ -33,7 +33,7 @@ def get_order(order_id: int):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve order: {str(e)}")
 
 
-@app.post("/api/orders", response_model=Order, status_code=status.HTTP_201_CREATED)
+@app.post("/api/orders/create", response_model=Order, status_code=status.HTTP_201_CREATED)
 def create_order(order: OrderCreate):
     try:
         return order_service.create(order)
@@ -41,7 +41,7 @@ def create_order(order: OrderCreate):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to create order: {str(e)}")
 
 
-@app.put("/api/orders/{order_id}", response_model=Order)
+@app.put("/api/orders/update/{order_id}", response_model=Order)
 def update_order(order_id: int, order: OrderUpdate):
     try:
         updated_order = order_service.update(order_id, order)
@@ -54,7 +54,7 @@ def update_order(order_id: int, order: OrderUpdate):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to update order: {str(e)}")
 
 
-@app.delete("/api/orders/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/orders/delete/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_order(order_id: int):
     try:
         success = order_service.delete(order_id)

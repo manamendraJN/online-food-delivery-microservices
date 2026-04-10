@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 
 class Order(BaseModel):
@@ -8,6 +8,11 @@ class Order(BaseModel):
     restaurant_id: int
     total_amount: float
     status: str
+    delivery_address: Optional[str] = None
+    contact_phone: Optional[str] = None
+    items: Optional[List[str]] = None
+    special_instructions: Optional[str] = None
+    payment_method: Optional[str] = None
 
 
 class OrderCreate(BaseModel):
@@ -15,6 +20,11 @@ class OrderCreate(BaseModel):
     restaurant_id: int
     total_amount: float
     status: str
+    delivery_address: Optional[str] = None
+    contact_phone: Optional[str] = None
+    items: Optional[List[str]] = None
+    special_instructions: Optional[str] = None
+    payment_method: Optional[str] = None
 
 
 class OrderUpdate(BaseModel):
@@ -22,3 +32,8 @@ class OrderUpdate(BaseModel):
     restaurant_id: Optional[int] = None
     total_amount: Optional[float] = None
     status: Optional[str] = None
+    delivery_address: Optional[str] = None
+    contact_phone: Optional[str] = None
+    items: Optional[List[str]] = None
+    special_instructions: Optional[str] = None
+    payment_method: Optional[str] = None

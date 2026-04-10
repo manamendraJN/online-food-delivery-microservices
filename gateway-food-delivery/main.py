@@ -1,9 +1,86 @@
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import JSONResponse
 import httpx
-from typing import Any
+from pydantic import BaseModel
+from typing import Any, Optional, List
 
 app = FastAPI(title="Food Delivery API Gateway", version="1.0.0")
+
+
+class UserCreate(BaseModel):
+    name: str
+    email: str
+    phone: str
+
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+
+
+class RestaurantCreate(BaseModel):
+    name: str
+    cuisine: str
+    city: str
+
+
+class RestaurantUpdate(BaseModel):
+    name: Optional[str] = None
+    cuisine: Optional[str] = None
+    city: Optional[str] = None
+
+
+class OrderCreate(BaseModel):
+    user_id: int
+    restaurant_id: int
+    total_amount: float
+    status: str
+    delivery_address: Optional[str] = None
+    contact_phone: Optional[str] = None
+    items: Optional[List[str]] = None
+    special_instructions: Optional[str] = None
+    payment_method: Optional[str] = None
+
+
+class OrderUpdate(BaseModel):
+    user_id: Optional[int] = None
+    restaurant_id: Optional[int] = None
+    total_amount: Optional[float] = None
+    status: Optional[str] = None
+    delivery_address: Optional[str] = None
+    contact_phone: Optional[str] = None
+    items: Optional[List[str]] = None
+    special_instructions: Optional[str] = None
+    payment_method: Optional[str] = None
+
+
+class PaymentCreate(BaseModel):
+    order_id: int
+    amount: float
+    method: str
+    status: str
+
+
+class PaymentUpdate(BaseModel):
+    order_id: Optional[int] = None
+    amount: Optional[float] = None
+    method: Optional[str] = None
+    status: Optional[str] = None
+
+
+class DeliveryCreate(BaseModel):
+    order_id: int
+    rider_name: str
+    current_location: str
+    status: str
+
+
+class DeliveryUpdate(BaseModel):
+    order_id: Optional[int] = None
+    rider_name: Optional[str] = None
+    current_location: Optional[str] = None
+    status: Optional[str] = None
 
 SERVICES = {
     "user": "http://localhost:8021",
@@ -45,136 +122,126 @@ def read_root():
     return {"message": "Food Delivery API Gateway is running", "available_services": list(SERVICES.keys())}
 
 
-@app.get("/gateway/users")
+@app.get("/gateway/users/read-all")
 async def get_all_users():
-    return await forward_request("user", "/api/users", "GET")
+    return await forward_request("user", "/api/users/read-all", "GET")
 
 
-@app.get("/gateway/users/{user_id}")
+@app.get("/gateway/users/read/{user_id}")
 async def get_user(user_id: int):
-    return await forward_request("user", f"/api/users/{user_id}", "GET")
+    return await forward_request("user", f"/api/users/read/{user_id}", "GET")
 
 
-@app.post("/gateway/users")
-async def create_user(request: Request):
-    body = await request.json()
-    return await forward_request("user", "/api/users", "POST", json=body)
+@app.post("/gateway/users/create")
+async def create_user(user: UserCreate):
+    return await forward_request("user", "/api/users/create", "POST", json=user.model_dump())
 
 
-@app.put("/gateway/users/{user_id}")
-async def update_user(user_id: int, request: Request):
-    body = await request.json()
-    return await forward_request("user", f"/api/users/{user_id}", "PUT", json=body)
+@app.put("/gateway/users/update/{user_id}")
+async def update_user(user_id: int, user: UserUpdate):
+    return await forward_request("user", f"/api/users/update/{user_id}", "PUT", json=user.model_dump(exclude_none=True))
 
 
-@app.delete("/gateway/users/{user_id}")
+@app.delete("/gateway/users/delete/{user_id}")
 async def delete_user(user_id: int):
-    return await forward_request("user", f"/api/users/{user_id}", "DELETE")
+    return await forward_request("user", f"/api/users/delete/{user_id}", "DELETE")
 
 
-@app.get("/gateway/restaurants")
+@app.get("/gateway/restaurants/read-all")
 async def get_all_restaurants():
-    return await forward_request("restaurant", "/api/restaurants", "GET")
+    return await forward_request("restaurant", "/api/restaurants/read-all", "GET")
 
 
-@app.get("/gateway/restaurants/{restaurant_id}")
+@app.get("/gateway/restaurants/read/{restaurant_id}")
 async def get_restaurant(restaurant_id: int):
-    return await forward_request("restaurant", f"/api/restaurants/{restaurant_id}", "GET")
+    return await forward_request("restaurant", f"/api/restaurants/read/{restaurant_id}", "GET")
 
 
-@app.post("/gateway/restaurants")
-async def create_restaurant(request: Request):
-    body = await request.json()
-    return await forward_request("restaurant", "/api/restaurants", "POST", json=body)
+@app.post("/gateway/restaurants/create")
+async def create_restaurant(restaurant: RestaurantCreate):
+    return await forward_request("restaurant", "/api/restaurants/create", "POST", json=restaurant.model_dump())
 
 
-@app.put("/gateway/restaurants/{restaurant_id}")
-async def update_restaurant(restaurant_id: int, request: Request):
-    body = await request.json()
-    return await forward_request("restaurant", f"/api/restaurants/{restaurant_id}", "PUT", json=body)
+@app.put("/gateway/restaurants/update/{restaurant_id}")
+async def update_restaurant(restaurant_id: int, restaurant: RestaurantUpdate):
+    return await forward_request("restaurant", f"/api/restaurants/update/{restaurant_id}", "PUT", json=restaurant.model_dump(exclude_none=True))
 
 
-@app.delete("/gateway/restaurants/{restaurant_id}")
+@app.delete("/gateway/restaurants/delete/{restaurant_id}")
 async def delete_restaurant(restaurant_id: int):
-    return await forward_request("restaurant", f"/api/restaurants/{restaurant_id}", "DELETE")
+    return await forward_request("restaurant", f"/api/restaurants/delete/{restaurant_id}", "DELETE")
 
 
-@app.get("/gateway/orders")
+@app.get("/gateway/orders/read-all")
 async def get_all_orders():
-    return await forward_request("order", "/api/orders", "GET")
+    return await forward_request("order", "/api/orders/read-all", "GET")
 
 
-@app.get("/gateway/orders/{order_id}")
+@app.get("/gateway/orders/read/{order_id}")
 async def get_order(order_id: int):
-    return await forward_request("order", f"/api/orders/{order_id}", "GET")
+    return await forward_request("order", f"/api/orders/read/{order_id}", "GET")
 
 
-@app.post("/gateway/orders")
-async def create_order(request: Request):
-    body = await request.json()
-    return await forward_request("order", "/api/orders", "POST", json=body)
+@app.post("/gateway/orders/create")
+async def create_order(order: OrderCreate):
+    return await forward_request("order", "/api/orders/create", "POST", json=order.model_dump())
 
 
-@app.put("/gateway/orders/{order_id}")
-async def update_order(order_id: int, request: Request):
-    body = await request.json()
-    return await forward_request("order", f"/api/orders/{order_id}", "PUT", json=body)
+@app.put("/gateway/orders/update/{order_id}")
+async def update_order(order_id: int, order: OrderUpdate):
+    return await forward_request("order", f"/api/orders/update/{order_id}", "PUT", json=order.model_dump(exclude_none=True))
 
 
-@app.delete("/gateway/orders/{order_id}")
+@app.delete("/gateway/orders/delete/{order_id}")
 async def delete_order(order_id: int):
-    return await forward_request("order", f"/api/orders/{order_id}", "DELETE")
+    return await forward_request("order", f"/api/orders/delete/{order_id}", "DELETE")
 
 
-@app.get("/gateway/payments")
+@app.get("/gateway/payments/read-all")
 async def get_all_payments():
-    return await forward_request("payment", "/api/payments", "GET")
+    return await forward_request("payment", "/api/payments/read-all", "GET")
 
 
-@app.get("/gateway/payments/{payment_id}")
+@app.get("/gateway/payments/read/{payment_id}")
 async def get_payment(payment_id: int):
-    return await forward_request("payment", f"/api/payments/{payment_id}", "GET")
+    return await forward_request("payment", f"/api/payments/read/{payment_id}", "GET")
 
 
-@app.post("/gateway/payments")
-async def create_payment(request: Request):
-    body = await request.json()
-    return await forward_request("payment", "/api/payments", "POST", json=body)
+@app.post("/gateway/payments/create")
+async def create_payment(payment: PaymentCreate):
+    return await forward_request("payment", "/api/payments/create", "POST", json=payment.model_dump())
 
 
-@app.put("/gateway/payments/{payment_id}")
-async def update_payment(payment_id: int, request: Request):
-    body = await request.json()
-    return await forward_request("payment", f"/api/payments/{payment_id}", "PUT", json=body)
+@app.put("/gateway/payments/update/{payment_id}")
+async def update_payment(payment_id: int, payment: PaymentUpdate):
+    return await forward_request("payment", f"/api/payments/update/{payment_id}", "PUT", json=payment.model_dump(exclude_none=True))
 
 
-@app.delete("/gateway/payments/{payment_id}")
+@app.delete("/gateway/payments/delete/{payment_id}")
 async def delete_payment(payment_id: int):
-    return await forward_request("payment", f"/api/payments/{payment_id}", "DELETE")
+    return await forward_request("payment", f"/api/payments/delete/{payment_id}", "DELETE")
 
 
-@app.get("/gateway/deliveries")
+@app.get("/gateway/deliveries/read-all")
 async def get_all_deliveries():
-    return await forward_request("delivery", "/api/deliveries", "GET")
+    return await forward_request("delivery", "/api/deliveries/read-all", "GET")
 
 
-@app.get("/gateway/deliveries/{delivery_id}")
+@app.get("/gateway/deliveries/read/{delivery_id}")
 async def get_delivery(delivery_id: int):
-    return await forward_request("delivery", f"/api/deliveries/{delivery_id}", "GET")
+    return await forward_request("delivery", f"/api/deliveries/read/{delivery_id}", "GET")
 
 
-@app.post("/gateway/deliveries")
-async def create_delivery(request: Request):
-    body = await request.json()
-    return await forward_request("delivery", "/api/deliveries", "POST", json=body)
+@app.post("/gateway/deliveries/create")
+async def create_delivery(delivery: DeliveryCreate):
+    return await forward_request("delivery", "/api/deliveries/create", "POST", json=delivery.model_dump())
 
 
-@app.put("/gateway/deliveries/{delivery_id}")
-async def update_delivery(delivery_id: int, request: Request):
-    body = await request.json()
-    return await forward_request("delivery", f"/api/deliveries/{delivery_id}", "PUT", json=body)
+@app.put("/gateway/deliveries/update/{delivery_id}")
+async def update_delivery(delivery_id: int, delivery: DeliveryUpdate):
+    return await forward_request("delivery", f"/api/deliveries/update/{delivery_id}", "PUT", json=delivery.model_dump(exclude_none=True))
 
 
-@app.delete("/gateway/deliveries/{delivery_id}")
+@app.delete("/gateway/deliveries/delete/{delivery_id}")
 async def delete_delivery(delivery_id: int):
-    return await forward_request("delivery", f"/api/deliveries/{delivery_id}", "DELETE")
+    return await forward_request("delivery", f"/api/deliveries/delete/{delivery_id}", "DELETE")

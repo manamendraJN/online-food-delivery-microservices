@@ -12,7 +12,7 @@ def read_root():
     return {"message": "Delivery Microservice is running"}
 
 
-@app.get("/api/deliveries", response_model=List[Delivery])
+@app.get("/api/deliveries/read-all", response_model=List[Delivery])
 def get_all_deliveries():
     try:
         return delivery_service.get_all()
@@ -20,7 +20,7 @@ def get_all_deliveries():
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve deliveries: {str(e)}")
 
 
-@app.get("/api/deliveries/{delivery_id}", response_model=Delivery)
+@app.get("/api/deliveries/read/{delivery_id}", response_model=Delivery)
 def get_delivery(delivery_id: int):
     try:
         delivery = delivery_service.get_by_id(delivery_id)
@@ -33,7 +33,7 @@ def get_delivery(delivery_id: int):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to retrieve delivery: {str(e)}")
 
 
-@app.post("/api/deliveries", response_model=Delivery, status_code=status.HTTP_201_CREATED)
+@app.post("/api/deliveries/create", response_model=Delivery, status_code=status.HTTP_201_CREATED)
 def create_delivery(delivery: DeliveryCreate):
     try:
         return delivery_service.create(delivery)
@@ -41,7 +41,7 @@ def create_delivery(delivery: DeliveryCreate):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to create delivery: {str(e)}")
 
 
-@app.put("/api/deliveries/{delivery_id}", response_model=Delivery)
+@app.put("/api/deliveries/update/{delivery_id}", response_model=Delivery)
 def update_delivery(delivery_id: int, delivery: DeliveryUpdate):
     try:
         updated_delivery = delivery_service.update(delivery_id, delivery)
@@ -54,7 +54,7 @@ def update_delivery(delivery_id: int, delivery: DeliveryUpdate):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to update delivery: {str(e)}")
 
 
-@app.delete("/api/deliveries/{delivery_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/api/deliveries/delete/{delivery_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_delivery(delivery_id: int):
     try:
         success = delivery_service.delete(delivery_id)
