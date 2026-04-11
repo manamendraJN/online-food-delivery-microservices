@@ -35,7 +35,7 @@ class OrderCreate(BaseModel):
     user_id: int
     restaurant_id: int
     total_amount: float
-    status: str
+    status: str = "PLACED"
     delivery_address: Optional[str] = None
     contact_phone: Optional[str] = None
     items: Optional[List[str]] = None
